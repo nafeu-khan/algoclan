@@ -200,7 +200,7 @@ Design and implement a RESTful API using Django Rest Framework (DRF) that allows
          "description": "clear sky",
          "timestamp": "2023-01-01T12:00:00Z"
        },
-       ...
+       {"..."}
      ]
      ```
 
