@@ -15,30 +15,39 @@ class WeatherDetailView(APIView):
     throttle_classes = [WeatherRateThrottle]
 
     def get(self, request):
-        lon = request.query_params.get('lon')
-        lat = request.query_params.get('lat')
-        if not lon or not lat:
-            return Response({'error': 'Longitude and latitude are required.'},
-                            status=status.HTTP_400_BAD_REQUEST)
-        try:
-            lon = float(lon)
-            lat = float(lat)
-        except ValueError:
-            return Response({'error': 'Invalid longitude or latitude.'}, status=status.HTTP_400_BAD_REQUEST)
 
-        cache_key = f"weather_{lon}_{lat}"
-        cached_data = cache.get(cache_key)
-        if cached_data:
-            return Response(cached_data)
-
-        API_KEY = os.getenv('OPENWEATHER_API_KEY')  # Replace with your API key
+        API_KEY = os.getenv('OPENWEATHER_API_KEY')
         # print(API_KEY)
         if not API_KEY:
             return Response({'error': 'API key not found.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        
+        city = request.query_params.get('city')
+        if not city:
+            return Response({'error': 'City is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        url_city = f"https://api.openweathermap.org/geo/1.0/direct?q={city}&limit=1&appid={API_KEY}"
+        external_response = requests.get(url_city)
+        if external_response.status_code != 200:
+            return Response({'error': 'Error fetching weather data from external API.'},status=external_response.status_code)
+        data = external_response.json()
+        try:
+            lon = data[0]['lon']
+            lat = data[0]['lat']
+        except (KeyError, IndexError):
+            return Response({'error': 'Invalid location format received from weather API for the city.'},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        
+        cache_key = f"weather_{lon}_{lat}"
+        cached_data = cache.get(cache_key)
+        if cached_data:
+            print('Cache hit')
+            return Response(cached_data)
+
         url = f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API_KEY}'
         # url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&appid={API_KEY}"
         external_response = requests.get(url)
-        # print(url)
         if external_response.status_code != 200:
             return Response({'error': 'Error fetching weather data from external API.'},
                             status=external_response.status_code)
@@ -73,7 +82,7 @@ class WeatherHistoryView(APIView):
         records = WeatherRecord.objects.filter(user=request.user).order_by('-timestamp')
         
         paginator = PageNumberPagination()
-        paginator.page_size = 3
+        paginator.page_size = os.getenv('PAGINATOR_PAGE_SIZE',10)
         
         paginated_records = paginator.paginate_queryset(records, request)
         

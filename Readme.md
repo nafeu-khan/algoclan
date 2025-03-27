@@ -16,7 +16,7 @@ Design and implement a RESTful API using Django Rest Framework (DRF) that allows
 
 2. **Third-Party API Integration**:
    - Fetch weather data using the OpenWeather API.
-   - Retrieve weather details based on lon and lat.
+   - Retrieve weather details based on lon and lat for the given city.
 
 3. **REST API Endpoints**:
    - **User Authentication**:
@@ -26,7 +26,7 @@ Design and implement a RESTful API using Django Rest Framework (DRF) that allows
      - `POST /api/auth/verify-email/` → email verification.
 
    - **Weather API**:
-     - `GET /api/weather/?lon={longitude}&lat={latitude}` → Fetch weather details for a given lan & log (requires authentication).
+     - `GET /api/weather/?city=<city_name>` → Fetch weather details for a given city (requires authentication).
      - `GET /api/weather/history/` → Retrieve previously searched weather records.
 
 4. **Database Storage**:
@@ -39,13 +39,13 @@ Design and implement a RESTful API using Django Rest Framework (DRF) that allows
      - `timestamp`
    - Create a database in mysql and update it in .env file
    - Set up Redis server for caching and also update it in .env file
-   
+
 5. **Error Handling**:
-   - Handled API errors (e.g., invalid lan &lon, rate limits, missing authentication).
+   - Handled API errors (e.g., invalid lan &lon for the city, rate limits, missing authentication).
    - Return proper HTTP status codes and JSON responses.
 
 6. **Bonus Features (Optional)**:
-   - Pagination for the `/api/weather/history/` endpoint .
+   - Pagination for the `/api/weather/history/` endpoint. Adjusted from env.
    - Used Redis caching for faster responses.
    - Limit requests to 5 per minute per user to prevent excessive API calls (can be handled from env)
 
@@ -72,7 +72,7 @@ Design and implement a RESTful API using Django Rest Framework (DRF) that allows
 
 4. **Set Up Environment Variables**:
    - Create a `.env` file in the project root.
-   - copy all from .env.example and paste it in .env then update from your end
+   - copy all from .env.example and paste it in .env then update from your end and desired value.
      
 
 5. **Apply Migrations**:
@@ -157,20 +157,22 @@ Design and implement a RESTful API using Django Rest Framework (DRF) that allows
 
 ### Weather API Endpoints
 1. **Fetch Weather Details**:
-   - **Endpoint**: `GET /api/weather/?lon={longitude}&lat={latitude}`
+   - **Endpoint**: `GET /api/weather/?city=tangail`
    - **Headers**:
      ```
      Authorization: Bearer <jwt-token>
      ```
    - **Response**:
      ```json
-     {
-       "longitude": 12.34,
-       "latitude": 56.78,
-       "temperature": 25.5,
-       "description": "clear sky",
-       "timestamp": "2023-01-01T12:00:00Z"
-     }
+         {
+            "id": 20,
+            "longitude": 89.9151479,
+            "latitude": 24.2507461,
+            "temperature": 303.87,
+            "description": "clear sky",
+            "timestamp": "2025-03-27T11:34:25.294206Z",
+            "user": 3
+         }
      ```
      Here firstly check redis cache server, if yes,then sent response from cache else fetch api and store the response in cache server for future use.
      
@@ -185,12 +187,14 @@ Design and implement a RESTful API using Django Rest Framework (DRF) that allows
      ```json
      [
        {
-         "longitude": 12.34,
-         "latitude": 56.78,
-         "temperature": 25.5,
-         "description": "clear sky",
-         "timestamp": "2023-01-01T12:00:00Z"
-       },
+            "id": 20,
+            "longitude": 89.9151479,
+            "latitude": 24.2507461,
+            "temperature": 303.87,
+            "description": "clear sky",
+            "timestamp": "2025-03-27T11:34:25.294206Z",
+            "user": 3
+        },
        {"..."}
      ]
      ```
