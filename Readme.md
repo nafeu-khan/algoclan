@@ -4,6 +4,10 @@
 Design and implement a RESTful API using Django Rest Framework (DRF) that allows users to fetch and store weather data using the OpenWeather API.
 
 ---
+## Stack
+   - Django rest framework
+   - MySQL
+   - Redis
 
 ## Features
 1. **User Authentication**:
@@ -33,7 +37,9 @@ Design and implement a RESTful API using Django Rest Framework (DRF) that allows
      - `temperature`
      - `description`
      - `timestamp`
-
+   - Create a database in mysql and update it in .env file
+   - Set up Redis server for caching and also update it in .env file
+   
 5. **Error Handling**:
    - Handled API errors (e.g., invalid lan &lon, rate limits, missing authentication).
    - Return proper HTTP status codes and JSON responses.
