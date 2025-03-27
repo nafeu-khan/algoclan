@@ -35,11 +35,11 @@ Design and implement a RESTful API using Django Rest Framework (DRF) that allows
      - `timestamp`
 
 5. **Error Handling**:
-   - Handle API errors (e.g., invalid lan &lon, rate limits, missing authentication).
+   - Handled API errors (e.g., invalid lan &lon, rate limits, missing authentication).
    - Return proper HTTP status codes and JSON responses.
 
 6. **Bonus Features (Optional)**:
-   - Pagination for the `/api/weather/history/` endpoint.
+   - Pagination for the `/api/weather/history/` endpoint .
    - Used Redis caching for faster responses.
    - Limit requests to 5 per minute per user to prevent excessive API calls (can be handled from env)
 
@@ -66,23 +66,8 @@ Design and implement a RESTful API using Django Rest Framework (DRF) that allows
 
 4. **Set Up Environment Variables**:
    - Create a `.env` file in the project root.
-   - Add the following variables:
-     ```
-        SECRET_KEY=<your-django-secret-key>
-        DEBUG=True
-        DB_ENGINE=django.db.backends.mysql
-        DB_NAME=<dbname>
-        DB_USER=<dbuser>
-        DB_PASSWORD=<dbpass>
-        DB_HOST=127.0.0.1
-        DB_PORT=3306
-
-        EMAIL_HOST_USER='noreply@algoclan.ca'
-        OPENWEATHER_API_KEY='<your-openweather-api-key>'
-        redis_cache_timeout_wtr_dtl= 6
-        DJANGO_GLOBAL_REQUEST_RATE_LIMIT= 3 #in minute
-        DJANGO_GLOBAL_REQUEST_RATE_LIMIT_PERIOD= 1
-     ```
+   - copy all from .env.example and paste it in .env then update from your end
+     
 
 5. **Apply Migrations**:
    ```bash
@@ -115,7 +100,7 @@ Design and implement a RESTful API using Django Rest Framework (DRF) that allows
             "message": "User registration is completed successfully."
         }
      ```
-     An verification link is sent to verify via email.
+     An verification link is sent to verify via email. Look at the console for now.
     1. **Email Verification**:
         - **Endpoint**: got from email. e.g. `POST /api/auth/verify-email/?uid=<link>&token=<id>`
         - **Response**:
