@@ -10,7 +10,7 @@ rate_limit_time = os.getenv('DJANGO_GLOBAL_REQUEST_RATE_LIMIT_TIME', 'm')
 rate_limit_block = os.getenv('DJANGO_GLOBAL_REQUEST_RATE_LIMIT_BLOCK', 'True').lower() in ['true', '1', 'yes']
 
 rate_limit_string = f"{rate_limit_value}/{rate_limit_time}"
-
+print("rate limit set to ",rate_limit_string)
 
 class RateLimitMiddleware:
     def __init__(self, get_response):

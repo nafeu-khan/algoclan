@@ -8,7 +8,7 @@ from .models import WeatherRecord
 from .serializers import WeatherRecordSerializer
 
 class WeatherRateThrottle(throttling.UserRateThrottle):
-    rate = '5/min'
+    rate = '10/min'
 
 class WeatherDetailView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -32,13 +32,13 @@ class WeatherDetailView(APIView):
             return Response(cached_data)
 
         API_KEY = os.getenv('OPENWEATHER_API_KEY')  # Replace with your API key
-        print(API_KEY)
+        # print(API_KEY)
         if not API_KEY:
             return Response({'error': 'API key not found.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         url = f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={API_KEY}'
         # url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&units=metric&appid={API_KEY}"
         external_response = requests.get(url)
-        print(url)
+        # print(url)
         if external_response.status_code != 200:
             return Response({'error': 'Error fetching weather data from external API.'},
                             status=external_response.status_code)

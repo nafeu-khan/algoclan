@@ -181,8 +181,8 @@ REST_FRAMEWORK = {
 # Example cache configuration using Redis 
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": "redis://127.0.0.1:6379/1",
+        "BACKEND": os.getenv('DJANGO_REDIS_BACKEND', "django_redis.cache.RedisCache"),
+        "LOCATION": os.getenv('DJANGO_REDIS_LOCATION_IP',"redis://127.0.0.1:6379/1"),
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
@@ -191,8 +191,8 @@ CACHES = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=500),  # Example: Access token expires in 5 minutes
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),   # Example: Refresh token expires in 7 days
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=int(os.getenv('ACCESS_TOKEN_LIFETIME',2))),  #  Access token expires in 5 minutes
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=int(os.getenv('ACCESS_TOKEN_LIFETIME',7))),   # Refresh token expires in 7 days
     'ROTATE_REFRESH_TOKENS': False,
     'BLACKLIST_AFTER_ROTATION': True,
     'ALGORITHM': 'HS256',
@@ -207,6 +207,6 @@ SIMPLE_JWT = {
     'TOKEN_TYPE_CLAIM': 'token_type',
     'JTI_CLAIM': 'jti',
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=500),
+    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=7),
 }
